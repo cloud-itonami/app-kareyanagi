@@ -1,0 +1,43 @@
+{
+  "name": "kotodama-w8p4dsvf",
+  "main": "svelte/.svelte-kit/cloudflare/_worker.js",
+  "compatibility_date": "2025-03-17",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "nodejs_als"
+  ],
+  "vars": {
+    "APP_CAPABILITIES": "[\"createListing\",\"listListings\",\"createOrder\",\"listOrders\",\"updateInventory\",\"getInventory\",\"processTrade\",\"getTradeHistory\"]",
+    "APP_DESCRIPTION": "kareyanagi — Dry Goods & Wholesale Trade Platform. BPMN-driven listing management, order processing, inventory tracking, and trade history.",
+    "APP_DISPLAY_NAME": "Wholesale Trade",
+    "APP_FRAMEWORK": "sveltekit-edge-bff",
+    "APP_NANOID": "w8p4dsvf",
+    "APP_PERFORMER_TYPE": "service",
+    "APP_UI_TYPE": "yoro",
+    "AGENTGATEWAY_MCP_ROUTER_URL": "https://mcp.etzhayyim.com/xrpc/com.etzhayyim.mcp.message"
+  },
+  "rules": [
+    {
+      "type": "CompiledWasm",
+      "globs": [
+        "**/*.wasm"
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "pattern": "w8p4dsvf.etzhayyim.com/*",
+      "zone_name": "etzhayyim.com"
+    },
+    {
+      "pattern": "kareyanagi.etzhayyim.com/*",
+      "zone_name": "etzhayyim.com"
+    }
+  ],
+  "assets": {
+    "directory": "./svelte/.svelte-kit/cloudflare/client",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "none"
+  }
+}

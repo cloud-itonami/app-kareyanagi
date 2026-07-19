@@ -1,0 +1,101 @@
+{
+  "@context": "https://schema.org/",
+  "@type": "Project",
+  "name": "カビ撲滅プラットフォーム (etzhayyim-project-kareyanagi)",
+  "status": "In Progress",
+  "identifier": "etzhayyim-project-kareyanagi",
+  "description": "カビをこの世から撲滅するプラットフォーム。IoT カビセンサーによるリアルタイム計測、maps.etzhayyim.com との空間連携によるカビ分布可視化、リスク予測、撲滅タスク管理を統合する。",
+  "url": "https://kareyanagi.etzhayyim.com",
+  "hasPart": [
+    {
+      "@type": "CreativeWork",
+      "name": "Strategy",
+      "url": "STRATEGY.jsonld"
+    },
+    {
+      "@type": "CreativeWork",
+      "name": "Capabilities",
+      "url": "capabilities.jsonld"
+    },
+    {
+      "@type": "CreativeWork",
+      "name": "Activities",
+      "url": "activities.jsonld"
+    },
+    {
+      "@type": "WebApplication",
+      "name": "kareyanagi.etzhayyim.com Portal",
+      "url": "https://kpat4bp7.etzhayyim.com"
+    }
+  ],
+  "tasks": [
+    {
+      "status": "in_progress",
+      "task": "カビセンサーデータ収集 API (Connect gRPC) 実装"
+    },
+    {
+      "status": "pending",
+      "task": "maps.etzhayyim.com 連携 — カビ分布 GeoJSON ヒートマップレイヤー公開"
+    },
+    {
+      "status": "pending",
+      "task": "H3 セル別リスクスコア集計パイプライン構築"
+    },
+    {
+      "status": "pending",
+      "task": "撲滅タスク管理 BPMN ワークフロー設計"
+    },
+    {
+      "status": "pending",
+      "task": "IoT センサーゲートウェイ (MQTT/HTTP) ingest 実装"
+    },
+    {
+      "status": "pending",
+      "task": "murakumo LLM リスク分析レポート生成"
+    },
+    {
+      "status": "pending",
+      "task": "Svelte 5 ダッシュボード UI + MapLibre カビ分布オーバーレイ"
+    }
+  ],
+  "performers": [
+    {
+      "@type": "Service",
+      "name": "Kareyanagi API",
+      "identifier": "etzhayyim-wasm-kareyanagi-mcr736od",
+      "description": "カビセンサーデータ収集、リスクスコア算出、撲滅タスク管理の SpinApp"
+    },
+    {
+      "@type": "Service",
+      "name": "Kareyanagi UI",
+      "identifier": "etzhayyim-wasm-kareyanagi-ui-kpat4bp7",
+      "description": "カビ分布ダッシュボード、センサー監視、撲滅タスクビュー"
+    }
+  ],
+  "dependencies": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "maps.etzhayyim.com",
+      "identifier": "etzhayyim-project-maps",
+      "description": "空間検索、H3 グリッド、GeoJSON dataset 管理、エンティティグラフ"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "murakumo.etzhayyim.com",
+      "identifier": "etzhayyim-project-murakumo",
+      "description": "LLM リスク分析 (qwen3-vl-8b)"
+    }
+  ],
+  "keywords": [
+    "カビ",
+    "mold",
+    "IoT",
+    "sensor",
+    "H3",
+    "spatial",
+    "eradication",
+    "maps.etzhayyim.com",
+    "humidity",
+    "air quality"
+  ]
+}

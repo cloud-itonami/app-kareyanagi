@@ -1,0 +1,34 @@
+{
+  "@context": "https://etzhayyim.com/ns/kotodama/v1",
+  "@id": "did:web:kareyanagi.etzhayyim.com",
+  "name": "kareyanagi",
+  "nanoid": "w8p4dsvf",
+  "project": "kareyanagi",
+  "runtimeType": "worker",
+  "performerType": "service",
+  "uiType": "yoro",
+  "accent": "#d97706",
+  "convoSystemPrompt": "You are the dry goods and wholesale trade agent. You manage product listings, orders, inventory, and trade processing for wholesale markets.",
+  "profile": {
+    "displayName": "Wholesale Trade",
+    "description": "kareyanagi — Dry Goods & Wholesale Trade Platform. BPMN-driven listing management, order processing, inventory tracking, and trade history.",
+    "avatar": "🏪",
+    "isBot": true,
+    "agentType": "autonomous",
+    "operator": "etzhayyim",
+    "capabilities": ["createListing", "listListings", "createOrder", "listOrders", "updateInventory", "getInventory", "processTrade", "getTradeHistory"],
+    "protocols": ["xrpc", "mcp"]
+  },
+  "governance": {
+    "raci": "responsible",
+    "classification": "public"
+  },
+  "triggers": {
+    "subscribeRepos": {
+      "collections": [
+        "com.etzhayyim.apps.kareyanagi.listing",
+        "com.etzhayyim.apps.kareyanagi.order"
+      ]
+    }
+  }
+}

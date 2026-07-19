@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  targetNamespace="http://bpmn.io/schema/bpmn">
+
+  <!-- createListing -->
+  <bpmn:process id="kareyanagi-create-listing" name="Kareyanagi Create Listing" isExecutable="true">
+    <bpmn:startEvent id="start-create-listing"/>
+    <bpmn:sequenceFlow id="sf-cl-1" sourceRef="start-create-listing" targetRef="task-create-listing"/>
+    <bpmn:serviceTask id="task-create-listing" name="Create Listing">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="com.etzhayyim.apps.kareyanagi.createListing"/>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="sf-cl-2" sourceRef="task-create-listing" targetRef="end-create-listing"/>
+    <bpmn:endEvent id="end-create-listing"/>
+  </bpmn:process>
+
+  <!-- listListings -->
+  <bpmn:process id="kareyanagi-list-listings" name="Kareyanagi List Listings" isExecutable="true">
+    <bpmn:startEvent id="start-list-listings"/>
+    <bpmn:sequenceFlow id="sf-ll-1" sourceRef="start-list-listings" targetRef="task-list-listings"/>
+    <bpmn:serviceTask id="task-list-listings" name="List Listings">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="com.etzhayyim.apps.kareyanagi.listListings"/>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="sf-ll-2" sourceRef="task-list-listings" targetRef="end-list-listings"/>
+    <bpmn:endEvent id="end-list-listings"/>
+  </bpmn:process>
+
+  <!-- createOrder -->
+  <bpmn:process id="kareyanagi-create-order" name="Kareyanagi Create Order" isExecutable="true">
+    <bpmn:startEvent id="start-create-order"/>
+    <bpmn:sequenceFlow id="sf-cord-1" sourceRef="start-create-order" targetRef="task-create-order"/>
+    <bpmn:serviceTask id="task-create-order" name="Create Order">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="com.etzhayyim.apps.kareyanagi.createOrder"/>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="sf-cord-2" sourceRef="task-create-order" targetRef="end-create-order"/>
+    <bpmn:endEvent id="end-create-order"/>
+  </bpmn:process>
+
+  <!-- listOrders -->
+  <bpmn:process id="kareyanagi-list-orders" name="Kareyanagi List Orders" isExecutable="true">
+    <bpmn:startEvent id="start-list-orders"/>
+    <bpmn:sequenceFlow id="sf-lord-1" sourceRef="start-list-orders" targetRef="task-list-orders"/>
+    <bpmn:serviceTask id="task-list-orders" name="List Orders">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="com.etzhayyim.apps.kareyanagi.listOrders"/>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="sf-lord-2" sourceRef="task-list-orders" targetRef="end-list-orders"/>
+    <bpmn:endEvent id="end-list-orders"/>
+  </bpmn:process>
+
+  <!-- updateInventory -->
+  <bpmn:process id="kareyanagi-update-inventory" name="Kareyanagi Update Inventory" isExecutable="true">
+    <bpmn:startEvent id="start-update-inventory"/>
+    <bpmn:sequenceFlow id="sf-ui-1" sourceRef="start-update-inventory" targetRef="task-update-inventory"/>
+    <bpmn:serviceTask id="task-update-inventory" name="Update Inventory">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="com.etzhayyim.apps.kareyanagi.updateInventory"/>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="sf-ui-2" sourceRef="task-update-inventory" targetRef="end-update-inventory"/>
+    <bpmn:endEvent id="end-update-inventory"/>
+  </bpmn:process>
+
+  <!-- getInventory -->
+  <bpmn:process id="kareyanagi-get-inventory" name="Kareyanagi Get Inventory" isExecutable="true">
+    <bpmn:startEvent id="start-get-inventory"/>
+    <bpmn:sequenceFlow id="sf-gi-1" sourceRef="start-get-inventory" targetRef="task-get-inventory"/>
+    <bpmn:serviceTask id="task-get-inventory" name="Get Inventory">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="com.etzhayyim.apps.kareyanagi.getInventory"/>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="sf-gi-2" sourceRef="task-get-inventory" targetRef="end-get-inventory"/>
+    <bpmn:endEvent id="end-get-inventory"/>
+  </bpmn:process>
+
+  <!-- processTrade -->
+  <bpmn:process id="kareyanagi-process-trade" name="Kareyanagi Process Trade" isExecutable="true">
+    <bpmn:startEvent id="start-process-trade"/>
+    <bpmn:sequenceFlow id="sf-pt-1" sourceRef="start-process-trade" targetRef="task-process-trade"/>
+    <bpmn:serviceTask id="task-process-trade" name="Process Trade">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="com.etzhayyim.apps.kareyanagi.processTrade"/>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="sf-pt-2" sourceRef="task-process-trade" targetRef="end-process-trade"/>
+    <bpmn:endEvent id="end-process-trade"/>
+  </bpmn:process>
+
+  <!-- getTradeHistory -->
+  <bpmn:process id="kareyanagi-get-trade-history" name="Kareyanagi Get Trade History" isExecutable="true">
+    <bpmn:startEvent id="start-get-trade-history"/>
+    <bpmn:sequenceFlow id="sf-gth-1" sourceRef="start-get-trade-history" targetRef="task-get-trade-history"/>
+    <bpmn:serviceTask id="task-get-trade-history" name="Get Trade History">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="com.etzhayyim.apps.kareyanagi.getTradeHistory"/>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="sf-gth-2" sourceRef="task-get-trade-history" targetRef="end-get-trade-history"/>
+    <bpmn:endEvent id="end-get-trade-history"/>
+  </bpmn:process>
+
+</bpmn:definitions>
