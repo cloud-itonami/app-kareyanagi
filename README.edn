@@ -1,1 +1,6 @@
-{:schema "etzhayyim.repository/v1" :name "com-etzhayyim-app-kareyanagi" :kind :app :canonical-metadata :edn}
+{:schema "etzhayyim.repository/v1"
+ :name "app-kareyanagi"
+ :kind :app
+ :canonical-metadata :edn
+ :boundary {:role :mold-eradication-operations-application
+            :spatial-application "cloud-itonami/app-maps"}}
