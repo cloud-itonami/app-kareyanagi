@@ -1,16 +1,17 @@
 {
   "name": "kotodama-w8p4dsvf",
-  "main": "svelte/.svelte-kit/cloudflare/_worker.js",
+  // Compiled from src/kareyanagi/worker.cljs by shadow-cljs (:target :esm).
+  // Before the cljs migration this pointed at
+  // "svelte/.svelte-kit/cloudflare/_worker.js" -- a path that is not in this
+  // tree at all -- and the TypeScript a reader opened (src/app.ts) was in no
+  // bundle. See docs/adr/0001.
+  "main": "../../dist/worker.js",
   "compatibility_date": "2025-03-17",
-  "compatibility_flags": [
-    "nodejs_compat",
-    "nodejs_als"
-  ],
   "vars": {
     "APP_CAPABILITIES": "[\"createListing\",\"listListings\",\"createOrder\",\"listOrders\",\"updateInventory\",\"getInventory\",\"processTrade\",\"getTradeHistory\"]",
     "APP_DESCRIPTION": "kareyanagi — Dry Goods & Wholesale Trade Platform. BPMN-driven listing management, order processing, inventory tracking, and trade history.",
     "APP_DISPLAY_NAME": "Wholesale Trade",
-    "APP_FRAMEWORK": "sveltekit-edge-bff",
+    "APP_FRAMEWORK": "cljs-esm-worker",
     "APP_NANOID": "w8p4dsvf",
     "APP_PERFORMER_TYPE": "service",
     "APP_UI_TYPE": "yoro",
@@ -33,11 +34,5 @@
       "pattern": "kareyanagi.etzhayyim.com/*",
       "zone_name": "etzhayyim.com"
     }
-  ],
-  "assets": {
-    "directory": "./svelte/.svelte-kit/cloudflare/client",
-    "binding": "ASSETS",
-    "html_handling": "auto-trailing-slash",
-    "not_found_handling": "none"
-  }
+  ]
 }

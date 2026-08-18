@@ -1,0 +1,198 @@
+[{:db/id -1
+  :adr/id "app-kareyanagi-0001"
+  :adr/title "appview を TypeScript/Svelte から ClojureScript へ移す"
+  :adr/status "accepted"
+  :adr/date "2026-08-18"
+  :adr/doc_type "adr"
+  :adr/source-format "edn"
+  :adr/body "
+# ADR-0001: appview を TypeScript/Svelte から ClojureScript へ移す
+
+**Status**: accepted / **Date**: 2026-08-18 / **Deciders**: Jun Kawasaki
+
+## Context — 先に測った
+
+この repo の appview（appview/kareyanagi-mcp-component）を移行前に測って、
+3 つの欠陥を確認した。
+
+1. **deploy される handler と、読み手が開くファイルが別だった。**
+   wrangler.jsonc の main は `svelte/.svelte-kit/cloudflare/_worker.js` を指して
+   いた。**このパスは tree に存在しない**（`git ls-files` に無く、
+   `svelte/.svelte-kit/` ディレクトリも無い）。つまり deploy されるのは
+   SvelteKit の *ビルド出力* であって、repo が持っているのはその *入力* だけ
+   である。一方 `src/app.ts` は、grep でこの repo 内のどこからも参照されて
+   いなかった（wrangler も vite も svelte.config も指していない）——
+   **どの bundle にも入らないファイル**が、いちばんアプリらしく読める場所に
+   置かれていた。
+
+2. **公開ページが隣の設定と矛盾していた。** `svelte/src/routes/+page.svelte` は
+   `routeCount: 0` / `routes: []` / `vars: []` / `title: \"Kareyanagi Mcp
+   Component\"` を literal で抱えていた。同じディレクトリの wrangler.jsonc は
+   route を 2 本、var を 8 個、表示名 `Wholesale Trade` を宣言している。
+   ページは自分の隣にある事実を 1 つも見ていなかった。
+
+3. **この repo は 2 つの identity を同時に主張している。** PROJECT.jsonld /
+   README.edn / CLAUDE.md は『カビ撲滅プラットフォーム』で component は
+   `mcr736od` と `kpat4bp7`。wrangler.jsonc / kotodama.jsonld は『Dry Goods &
+   Wholesale Trade Platform』で nanoid は `w8p4dsvf`。**前者の 2 component は
+   tree に存在しない。** これは移行が作った問題ではなく、移行が直す問題でも
+   ない —— 記録する。
+
+## Decision
+
+**appview を ClojureScript に移し、TypeScript と Svelte を撤去する。**
+
+    src/kareyanagi/route.cljc    判断（どの handler が答えるか）
+    src/kareyanagi/view.cljc     ページ（jp-go-dds の hiccup）
+    src/kareyanagi/worker.cljs   Request/Response に触る唯一の層
+            ↓ shadow-cljs :target :esm
+    dist/worker.js               wrangler.jsonc の main が指すもの
+
+この workspace の正本言語は cljs と kotoba である（superproject CLAUDE.md の
+runtime 順序: kotoba wasm > clojurewasm > ClojureScript > nbb）。TypeScript は
+そこに無い。入口を .kotoba ではなく cljs に置くのは ADR-2606290000 の判断で、
+kotoba の ingress capability が :native-aot / :wasm-aot とも pending だから
+である。判断を .cljc に切り出してあるのは、ブラウザもビルドも無しにテスト
+するためであり、ingress が qualify した時に最初に .kotoba へ移る部分だから
+でもある。
+
+先例は同じ org の cloud-itonami/app-ongakuka と
+cloud-itonami-marketplace-listing（src/listingops/*.cljc → shadow-cljs :esm →
+dist/worker.js）。
+
+### これで消えた欠陥
+
+- (1) は構造的に消えた。main が指す bundle は src/ からコンパイルされる。
+  検証器が **shadow の :output-dir と wrangler の main と export の ns 名の
+  3 つが噛み合っていること**を検査する。
+- (2) も構造的に消えた。ページは route 表（kareyanagi.route/routes）と env を
+  引数で受け取って描く。表示と実際に答えるものが同じ 1 つの値から出る。
+  表示名すら焼いていない —— `route/identity-of` が env から作る。
+- (3) は消えていない（移行の仕事ではない）。ただしページが deploy される側の
+  名乗りを描くようになったので、**食い違いはページを見れば見える**。
+  README.md と CLAUDE.md に測定として記録し、検証器が両方の文字列を pin して
+  いるので、どちらかが黙って書き換わると落ちる。
+
+### 移さなかった経路（黙って消していない）
+
+`src/app.ts` にあってどこにも deploy されていなかった経路のうち、次は
+**意図的に移していない**:
+
+- `/xrpc/com.etzhayyim.apps.kareyanagi.*` → `dispatcher.etzhayyim.com` への
+  proxy。宛先は **NXDOMAIN**（実測 2026-08-18）で、必要な binding
+  `DISPATCHER_URL` / `DISPATCHER_INTERNAL_SECRET` は wrangler.jsonc に
+  **1 つも宣言されていない**。
+- `/_app/meta`。`/health` と同じ本文を返すだけの別名で、deploy された
+  SvelteKit の面には無かった。
+
+**動かない経路を移植して『移行済み』と言わないため**である。必要になった
+時点で route.cljc に足し、テストと binding を伴って戻す。
+
+### 足したもの
+
+`/health` は deploy されていた SvelteKit の面には無かった（`/` と
+`/xrpc/[...path]` だけ）。`src/app.ts` には在ったが、それはどこにも deploy
+されていない。**これは移植ではなく追加である** —— 外から生存を確かめられる
+面が要るので入れた。ADR にこう書くのは、あとで『移行前からあった』と読まれ
+ないようにするため。
+
+### 多段パスの扱いは変えない
+
+移行前の SvelteKit route は rest parameter `[...path]` で受けており、
+`/xrpc/a/b` をそのまま tool 名として転送し、空文字だけを 400 にしていた。
+cljs 版も同じにした。1 セグメントに絞ると失敗の起きる場所と応答が変わる
+—— **それは移行ではなく方針変更**であり、移行の commit に紛れ込ませてよい
+ものではない。絞りたいなら別の決定として記録する。
+
+### 移さなかった TypeScript は無い
+
+この repo の TypeScript は 5 本すべて appview のものだった
+（src/app.ts / svelte の +server.ts と vite.config.ts / vitest.config.ts /
+test/kareyanagi.test.ts）。domain library や SDK face のような
+『appview ではない TypeScript』は無い。**appview ではないものとして
+`bpmn/kareyanagi-control.bpmn` が 1 本あり、これは残した** —— どの bundle にも
+入らず、置き換える対象が参照してもいない。消せば移行ではなく破壊になる。
+検証器が本数を pin しているので、黙って増えることもない。
+
+### UI
+
+基盤は jp-go-digital-design-system（skill kotoba-uiux が定める新規 UI の base）。
+色・寸法は --hig-* トークン契約のみ、app 固有 CSS は 3 行。CSS は
+shadow.resource/inline で bundle に焼く（design system の外部リクエストゼロ
+方針）。
+
+## 検証（この ADR を書いた時点で実際に通したもの）
+
+- kareyanagi.route-test: 6 tests / 33 assertions、0 failures（nbb、ビルド不要）
+- ページ描画 → design-quality score 100.00、gate PASS（`--extra-axes` で 12 軸
+  すべてを当てても 100.00）
+- scripts/verify-docs-claims.cljs: 20 claim すべて PASS、exit 0
+- **bundle をビルドし、実際に叩いた。** shadow-cljs release worker が
+  55 files / 12 compiled / 0 warnings / 18.35s で通り、dist/worker.js
+  （246,084 バイト、sha256 5a0f1580…70db630a）を出した。
+  scripts/smoke-worker.cljs がそれを import して 20 項目を確認。
+- **実際の workerd でも動かした**（wrangler 4.124.0 の dev --local、
+  compatibility_flags を削除した設定のまま）: GET / が 200 の HTML、
+  GET /health が 200 で自分の route を名乗り、POST /xrpc/ が 400、
+  POST /xrpc/a/b と POST /xrpc/com.…listListings がどちらも 502
+  『MCP router unreachable』、OPTIONS が 204、未知パスが 404、誤 method が 405。
+  **compatibility_flags の撤去は憶測ではなくこの実測のあとに行った。**
+
+### すべての gate を、緑を受け取る前に赤くして確かめた
+
+『落ちない検査は劇場』の対偶も同じく成り立つので、11 の mutation を **1 つずつ**
+当てて、**対応する検査だけが**赤くなることを見た。
+
+| # | 何を壊したか | 赤くなったもの |
+|---|---|---|
+| T1 | view が渡された routes を無視して空表を描く | `page-shows-the-real-routes`（2 assertion） |
+| T2 | `/xrpc/a/b` を 400 にする | `dispatch-xrpc` |
+| T3 | 表示名をページに焼く | `identity-comes-from-env…` + `page-shows-the-real-routes` |
+| D1 | ページから viewport meta を外す | design-quality 100.00 → **88.76 FAIL** |
+| V1 | 別名の .ts が入る | `production-ts-files` / `tracked-files` |
+| V2 | 撤去した app.ts が戻る（untracked） | `removed-by-migration-absent` |
+| V3 | `:warnings-as-errors` を `:build-options` へ移す | `warnings-as-errors-in-compiler-options` |
+| V4 | CLAUDE.md から実測節を消す | `claude-md-describes-cljs` |
+| V5 | compatibility_flags が戻る | `sveltekit-compat-flags` |
+| V6 | 別名の .svelte が入る | `svelte-artifacts` / `tracked-files` |
+| V7 | git repo でない場所で走らせる | **exit 2**（0 とも 1 とも別） |
+| V8 | 継承ファイルを 1 バイト編集 | `inherited-bytes` / `preserved-files-unchanged` |
+| V9 | 2 本目の .bpmn が現れる | `bpmn-files` / `tracked-files` |
+| V10 | wrangler の main を旧 SvelteKit 出力に戻す | `wrangler-main` / `shadow-builds-that-main` |
+| V11 | README.edn の role を書き換える | `readme-edn-role` ほか |
+| M1 | 存在しない var を参照する | **ビルドが exit 1**、bundle の sha256 は不変 |
+| M2 | `(rc/inline \"jp_go_dds/dds.css\")` → `\"\"` | smoke の `page carries the stylesheet itself` **だけ**（`page uses the design system components` は緑のまま） |
+| M3 | ページが env の値を全部出す | smoke の `page hides other var values`（出すべき 2 つは緑のまま） |
+| M4 | `/xrpc/a/b` を 400 にする | smoke の `multi-segment nsid is relayed the same way`（400 ≠ 502） |
+| — | smoke に bundle を渡さない | **exit 2**（0 とも 1 とも別） |
+
+**M2 が示したのがこの節の要点である。** 『デザインシステムを使っているか』を
+`dads-table` の存在 1 本で見る形は**落ちない検査**だった —— それは view が出力する
+markup であって、CSS が 1 バイトも入っていないページにも現れる（実測: css 込み 74 /
+css 無し **6**、`class=\"dads-table\"` に至っては **1 / 1** で変化しない）。
+`--color-primitive-blue` は 45 / **0** になる。だから 2 本に割り、CSS を外して
+**ビルドし直した bundle** に対して、2 本目だけが赤くなることを確認した。
+
+**M3 が示したのはもう 1 つの形**である。『値を出していない』を 1 つの印だけで
+見ると、『全部隠す』実装も『全部出す』実装も通る。出ない印（表示しない var に
+置いた sentinel）と出る印（表示名と中継先）の **2 つ**で見る。
+
+そして 4 つの mutation を当てたあと、ソースを戻して**もう一度ビルドし、
+sha256 が baseline と 1 バイトも違わないこと**を確認した（5a0f1580…70db630a）。
+このマシンでは 4〜5 個の agent が並行して走り `/tmp` を共有しているので、
+『復元したファイルが自分のものだった』ことは sha でしか言えない。
+
+## Consequences
+
+- production の TypeScript は 0 本、正本言語（.cljs/.cljc）が 4 本になった
+  （移行前は 5 対 0）。この 2 つは検証器の claim なので、TS が戻れば落ちる ——
+  撤去した 12 パスに戻る場合と、別名で入る場合を別々の claim が捕まえる。
+- 継承した 5 ファイル（10,588 バイト）は 1 バイトも変わっていない
+  （sha256 を検証器に固定）。wrangler.jsonc と CLAUDE.md だけは意図的に
+  変更したので、hash ではなく **内容**で検査する。
+- ホストは NXDOMAIN のままである（kareyanagi.etzhayyim.com /
+  w8p4dsvf.etzhayyim.com / mcp.etzhayyim.com とも）。移行はそれを直さない。
+  deploy するか retire するかは別の決定。
+- identity の食い違い（カビ撲滅 vs 卸売取引）は残っている。どちらが正かは
+  オーナーの決定であって、移行が勝手に選ぶものではない。
+"}]
