@@ -2,14 +2,54 @@
 
 カビ撲滅プラットフォーム (kareyanagi.etzhayyim.com)。カビセンサー IoT データ収集、空間分布マッピング (maps.etzhayyim.com 連携)、リスク予測、撲滅アクション管理。
 
+## この repository の tree に実在するもの（2026-08-18 実測）
+
+**下の Components / Architecture / Domain Model は etzhayyim/root から継承した
+設計文書であり、この tree に在るものの記述ではない。** 実際に checkout される
+ファイルはこれだけである:
+
+| パス | 何か | 言語 |
+|---|---|---|
+| `appview/kareyanagi-mcp-component/` | 唯一の appview（Cloudflare Worker） | **ClojureScript** |
+| `src/kareyanagi/{route.cljc, view.cljc, worker.cljs}` | その Worker のソース | ClojureScript |
+| `bpmn/kareyanagi-control.bpmn` | BPMN プロセス定義 1 本（どの bundle にも入らない） | XML |
+
+**この appview は 2026-08-18 に TypeScript/Svelte から ClojureScript へ移行した**
+（`docs/adr/0001`）。ビルドは `shadow-cljs`（`:target :esm`）で、`wrangler.jsonc`
+の `main` はその出力 `dist/worker.js` を指す。`APP_FRAMEWORK` は
+`sveltekit-edge-bff` から `cljs-esm-worker` に変えた。**Svelte も TypeScript も
+この tree には無い。**
+
+### 測って分かった食い違い（移行では直していない）
+
+この repo は **2 つの別の identity** を同時に主張している。どちらが正かを決める
+のは移行の仕事ではないので、記録だけする:
+
+| 出所 | 名乗り | nanoid |
+|---|---|---|
+| `PROJECT.jsonld` / `README.edn` / 下の設計文書 | カビ撲滅プラットフォーム | `mcr736od` / `kpat4bp7` |
+| `appview/…/wrangler.jsonc` / `kotodama.jsonld`（**deploy される側**） | Wholesale Trade（乾物・卸売取引） | `w8p4dsvf` |
+
+`mcr736od` も `kpat4bp7` も tree に無い。公開ページは **deploy される側**
+（wrangler の vars）を描く —— ページに名前を焼かず env から受け取るので、
+この食い違いはページを見れば見える。
+
 ## Components
 
-| Component | Folder | nanoid | 役割 |
-|---|---|---|---|
-| kareyanagi-api | `etzhayyim-wasm-kareyanagi-mcr736od` | mcr736od | カビセンサーデータ収集 + リスク分析 + XRPC API |
-| kareyanagi-ui | `etzhayyim-wasm-kareyanagi-ui-kpat4bp7` | kpat4bp7 | ダッシュボード UI + maps.etzhayyim.com 空間連携ビュー |
+**⚠ 下の 2 component はどちらもこの tree に存在しない**（上節の実測）。継承した
+設計文書としてそのまま残す。
+
+| Component | Folder | nanoid | 役割 | tree に在るか |
+|---|---|---|---|---|
+| kareyanagi-api | `etzhayyim-wasm-kareyanagi-mcr736od` | mcr736od | カビセンサーデータ収集 + リスク分析 + XRPC API | **無い** |
+| kareyanagi-ui | `etzhayyim-wasm-kareyanagi-ui-kpat4bp7` | kpat4bp7 | ダッシュボード UI + maps.etzhayyim.com 空間連携ビュー | **無い** |
 
 ## Architecture
+
+**⚠ この図は計画であって、この tree の実装ではない。** 図中の
+`Svelte 5 + MapLibre` は tree に無い `kpat4bp7` の計画であり、実在する唯一の
+appview（`kareyanagi-mcp-component`）は Svelte を使わない ClojureScript Worker
+である（上節）。
 
 ```
 ┌─────────────────────────────────────────────────────────┐
