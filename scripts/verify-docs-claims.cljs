@@ -22,7 +22,7 @@
 (def APP "appview/kareyanagi-mcp-component")
 
 (def claims
-  {:tracked-files 19
+  {:tracked-files 20
    :inherited-bytes 10588          ; the 5 inherited files still carried unchanged
    :svelte-artifacts 0             ; no .svelte / svelte.config / svelte-dir file survives
    :sveltekit-compat-flags 0       ; nodejs_compat / nodejs_als were adapter-cloudflare's
