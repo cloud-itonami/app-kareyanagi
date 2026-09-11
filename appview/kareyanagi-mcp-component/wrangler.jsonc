@@ -1,6 +1,6 @@
 {
   "name": "kotodama-w8p4dsvf",
-  // Compiled from src/kareyanagi/worker.cljs by shadow-cljs (:target :esm).
+  // Compiled from src/kareyanagi/worker.cljk by shadow-cljs (:target :esm).
   // Before the cljs migration this pointed at
   // "svelte/.svelte-kit/cloudflare/_worker.js" -- a path that is not in this
   // tree at all -- and the TypeScript a reader opened (src/app.ts) was in no

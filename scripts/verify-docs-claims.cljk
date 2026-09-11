@@ -9,7 +9,7 @@
 ;; assert the CLOSURE, and they are written so it cannot quietly come back: the
 ;; TypeScript is asserted ABSENT BY NAME, not merely absent from a byte total.
 ;;
-;; Usage:  nbb scripts/verify-docs-claims.cljs [<dir>]     (<dir> FIRST, default ".")
+;; Usage:  nbb scripts/verify-docs-claims.cljk [<dir>]     (<dir> FIRST, default ".")
 ;; Exit:   0 every claim holds · 1 a claim is false · 2 could not answer
 
 (require '["node:fs" :as fs]
@@ -193,8 +193,8 @@
     ;; a different name. Asserted STRUCTURALLY and NOT by forbidding a substring:
     ;; a check that a docstring explaining the old defect can fail is a check about
     ;; prose, not about code.
-    (let [v (slurp* "src/kareyanagi/view.cljc")
-          w (slurp* "src/kareyanagi/worker.cljs")]
+    (let [v (slurp* "src/kareyanagi/view.cljk")
+          w (slurp* "src/kareyanagi/worker.cljk")]
       (if (or (nil? v) (nil? w))
         (undet! "view.cljc or worker.cljs unreadable")
         (check! :page-renders-route-table true

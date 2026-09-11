@@ -42,9 +42,9 @@
 
 **appview を ClojureScript に移し、TypeScript と Svelte を撤去する。**
 
-    src/kareyanagi/route.cljc    判断（どの handler が答えるか）
-    src/kareyanagi/view.cljc     ページ（jp-go-dds の hiccup）
-    src/kareyanagi/worker.cljs   Request/Response に触る唯一の層
+    src/kareyanagi/route.cljk    判断（どの handler が答えるか）
+    src/kareyanagi/view.cljk     ページ（jp-go-dds の hiccup）
+    src/kareyanagi/worker.cljk   Request/Response に触る唯一の層
             ↓ shadow-cljs :target :esm
     dist/worker.js               wrangler.jsonc の main が指すもの
 
@@ -126,11 +126,11 @@ shadow.resource/inline で bundle に焼く（design system の外部リクエ�
 - kareyanagi.route-test: 6 tests / 33 assertions、0 failures（nbb、ビルド不要）
 - ページ描画 → design-quality score 100.00、gate PASS（`--extra-axes` で 12 軸
   すべてを当てても 100.00）
-- scripts/verify-docs-claims.cljs: 20 claim すべて PASS、exit 0
+- scripts/verify-docs-claims.cljk: 20 claim すべて PASS、exit 0
 - **bundle をビルドし、実際に叩いた。** shadow-cljs release worker が
   55 files / 12 compiled / 0 warnings / 18.35s で通り、dist/worker.js
   （246,084 バイト、sha256 5a0f1580…70db630a）を出した。
-  scripts/smoke-worker.cljs がそれを import して 20 項目を確認。
+  scripts/smoke-worker.cljk がそれを import して 20 項目を確認。
 - **実際の workerd でも動かした**（wrangler 4.124.0 の dev --local、
   compatibility_flags を削除した設定のまま）: GET / が 200 の HTML、
   GET /health が 200 で自分の route を名乗り、POST /xrpc/ が 400、
