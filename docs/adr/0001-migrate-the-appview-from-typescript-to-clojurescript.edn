@@ -127,7 +127,7 @@ shadow.resource/inline で bundle に焼く（design system の外部リクエ�
 - ページ描画 → design-quality score 100.00、gate PASS（`--extra-axes` で 12 軸
   すべてを当てても 100.00）
 - scripts/verify-docs-claims.cljk: 20 claim すべて PASS、exit 0
-- **bundle をビルドし、実際に叩いた。** shadow-cljs release worker が
+- **bundle をビルドし、実際に叩いた。** amu compile --target wasm32-browser worker が
   55 files / 12 compiled / 0 warnings / 18.35s で通り、dist/worker.js
   （246,084 バイト、sha256 5a0f1580…70db630a）を出した。
   scripts/smoke-worker.cljk がそれを import して 20 項目を確認。
