@@ -20,7 +20,7 @@ Cloudflare のアカウントは要らない（deploy だけが要る。§5）�
 git clone git@github.com:cloud-itonami/app-kareyanagi.git
 cd app-kareyanagi
 REPO=$PWD
-npx --yes nbb scripts/verify-docs-claims.cljs .
+npx --yes nbb scripts/verify-docs-claims.cljk .
 ```
 
 実際の出力:
@@ -203,7 +203,7 @@ $ shasum -a256 dist/worker.js
 ここが deploy されるものに触る唯一の検査である。
 
 ```bash
-cd "$REPO" && npx --yes nbb scripts/smoke-worker.cljs dist/worker.js
+cd "$REPO" && npx --yes nbb scripts/smoke-worker.cljk dist/worker.js
 ```
 
 ```

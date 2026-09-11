@@ -5,7 +5,7 @@
 
 `etzhayyim/root` の `60-apps/etzhayyim-project-kareyanagi` からの抽出物で、
 **2026-08-18 に TypeScript/Svelte から ClojureScript へ移行した**（ADR-0001）。
-数字はすべて `scripts/verify-docs-claims.cljs` が tree から再計算して検査する。
+数字はすべて `scripts/verify-docs-claims.cljk` が tree から再計算して検査する。
 
 ## ⚠ この repo は 2 つの identity を主張している（移行では直していない）
 
@@ -23,9 +23,9 @@
 ## deploy されるものは、いま読んでいるソースである
 
 ```
-src/kareyanagi/route.cljc    判断（どの handler が答えるか）  ← 純 .cljc、テスト対象
-src/kareyanagi/view.cljc     ページ（jp-go-dds の hiccup）    ← 純 .cljc、テスト対象
-src/kareyanagi/worker.cljs   Request/Response に触る唯一の層
+src/kareyanagi/route.cljk    判断（どの handler が答えるか）  ← 純 .cljc、テスト対象
+src/kareyanagi/view.cljk     ページ（jp-go-dds の hiccup）    ← 純 .cljc、テスト対象
+src/kareyanagi/worker.cljk   Request/Response に触る唯一の層
         ↓ shadow-cljs :target :esm
 dist/worker.js               ← wrangler.jsonc の "main" が指すもの
 ```
@@ -38,7 +38,7 @@ deploy されるのは SvelteKit の *ビルド出力* で、repo が持って�
 アプリらしく読めるファイルが、どの bundle にも入っていなかった（ADR-0001）。
 
 いまは `main` が指す bundle が上のソースからコンパイルされたものなので、その
-形は構造的に起こり得ない。`scripts/verify-docs-claims.cljs` が
+形は構造的に起こり得ない。`scripts/verify-docs-claims.cljk` が
 **shadow の出力先と wrangler の `main` と export の ns 名の 3 つが噛み合って
 いること**を検査し、噛み合わなくなれば落ちる。
 
@@ -70,7 +70,7 @@ deploy されていない）。あとで「移行前からあった」と読ま�
 | 面 | ファイル |
 |---|---|
 | 判断・描画・edge | `src/kareyanagi/{route.cljc, view.cljc, worker.cljs}` |
-| テスト | `test/kareyanagi/route_test.cljc`（6 tests / 33 assertions） |
+| テスト | `test/kareyanagi/route_test.cljk`（6 tests / 33 assertions） |
 | ビルド | `deps.edn` / `shadow-cljs.edn` / `.gitignore` |
 | Worker 設定 | `appview/kareyanagi-mcp-component/wrangler.jsonc` |
 | actor 記述子 | `appview/kareyanagi-mcp-component/kotodama.jsonld` |
@@ -196,7 +196,7 @@ deploy 先も中継先も、いま存在しない。`/xrpc/` は到達できな�
 ## 検証
 
 ```bash
-npx --yes nbb scripts/verify-docs-claims.cljs .     # <dir> は先頭に置く
+npx --yes nbb scripts/verify-docs-claims.cljk .     # <dir> は先頭に置く
 ```
 
 exit 0 = 全一致 / 1 = 食い違い / **2 = 判定できなかった**（0 と区別する）。
