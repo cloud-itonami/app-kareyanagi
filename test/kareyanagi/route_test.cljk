@@ -1,5 +1,5 @@
 (ns kareyanagi.route-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [kotoba.lang.text :as str]
             [kareyanagi.route :as route]
             [kareyanagi.view :as view]))
