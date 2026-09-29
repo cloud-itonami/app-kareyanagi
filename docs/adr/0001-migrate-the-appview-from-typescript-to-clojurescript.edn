@@ -32,7 +32,7 @@
    ページは自分の隣にある事実を 1 つも見ていなかった。
 
 3. **この repo は 2 つの identity を同時に主張している。** PROJECT.jsonld /
-   README.edn / CLAUDE.md は『カビ撲滅プラットフォーム』で component は
+   README.edn / AGENTS.md は『カビ撲滅プラットフォーム』で component は
    `mcr736od` と `kpat4bp7`。wrangler.jsonc / kotodama.jsonld は『Dry Goods &
    Wholesale Trade Platform』で nanoid は `w8p4dsvf`。**前者の 2 component は
    tree に存在しない。** これは移行が作った問題ではなく、移行が直す問題でも
@@ -48,7 +48,7 @@
             ↓ shadow-cljs :target :esm
     dist/worker.js               wrangler.jsonc の main が指すもの
 
-この workspace の正本言語は cljs と kotoba である（superproject CLAUDE.md の
+この workspace の正本言語は cljs と kotoba である（superproject AGENTS.md の
 runtime 順序: kotoba wasm > clojurewasm > ClojureScript > nbb）。TypeScript は
 そこに無い。入口を .kotoba ではなく cljs に置くのは ADR-2606290000 の判断で、
 kotoba の ingress capability が :native-aot / :wasm-aot とも pending だから
@@ -70,7 +70,7 @@ dist/worker.js）。
   表示名すら焼いていない —— `route/identity-of` が env から作る。
 - (3) は消えていない（移行の仕事ではない）。ただしページが deploy される側の
   名乗りを描くようになったので、**食い違いはページを見れば見える**。
-  README.md と CLAUDE.md に測定として記録し、検証器が両方の文字列を pin して
+  README.md と AGENTS.md に測定として記録し、検証器が両方の文字列を pin して
   いるので、どちらかが黙って書き換わると落ちる。
 
 ### 移さなかった経路（黙って消していない）
@@ -152,7 +152,7 @@ shadow.resource/inline で bundle に焼く（design system の外部リクエ�
 | V1 | 別名の .ts が入る | `production-ts-files` / `tracked-files` |
 | V2 | 撤去した app.ts が戻る（untracked） | `removed-by-migration-absent` |
 | V3 | `:warnings-as-errors` を `:build-options` へ移す | `warnings-as-errors-in-compiler-options` |
-| V4 | CLAUDE.md から実測節を消す | `claude-md-describes-cljs` |
+| V4 | AGENTS.md から実測節を消す | `claude-md-describes-cljs` |
 | V5 | compatibility_flags が戻る | `sveltekit-compat-flags` |
 | V6 | 別名の .svelte が入る | `svelte-artifacts` / `tracked-files` |
 | V7 | git repo でない場所で走らせる | **exit 2**（0 とも 1 とも別） |
@@ -188,7 +188,7 @@ sha256 が baseline と 1 バイトも違わないこと**を確認した（5a0f
   （移行前は 5 対 0）。この 2 つは検証器の claim なので、TS が戻れば落ちる ——
   撤去した 12 パスに戻る場合と、別名で入る場合を別々の claim が捕まえる。
 - 継承した 5 ファイル（10,588 バイト）は 1 バイトも変わっていない
-  （sha256 を検証器に固定）。wrangler.jsonc と CLAUDE.md だけは意図的に
+  （sha256 を検証器に固定）。wrangler.jsonc と AGENTS.md だけは意図的に
   変更したので、hash ではなく **内容**で検査する。
 - ホストは NXDOMAIN のままである（kareyanagi.etzhayyim.com /
   w8p4dsvf.etzhayyim.com / mcp.etzhayyim.com とも）。移行はそれを直さない。

@@ -135,7 +135,7 @@ gate: aggregate 100.00 >= min 95.00 -> PASS
 
 ## 4. bundle をビルドする
 
-**高負荷ビルドは同時 1 本に制限されている**（superproject `CLAUDE.md` の
+**高負荷ビルドは同時 1 本に制限されている**（superproject `AGENTS.md` の
 resource governor）。直接叩かず、必ず guard 経由で:
 
 ```bash
@@ -293,6 +293,6 @@ superproject の deploy guard は `origin/main` を含む checkout からの dep
   にあり、どこにも deploy されていなかった経路。宛先が NXDOMAIN、または
   binding が `wrangler.jsonc` に無いので**持ち越していない**（README の
   「持ち越さなかったもの」）
-- カビセンサー・H3 分布・撲滅タスク —— `CLAUDE.md` と `PROJECT.jsonld` が
+- カビセンサー・H3 分布・撲滅タスク —— `AGENTS.md` と `PROJECT.jsonld` が
   記述する機能。**この tree にその実装は無い**（component `mcr736od` /
   `kpat4bp7` 自体が無い）
