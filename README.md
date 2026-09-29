@@ -11,7 +11,7 @@
 
 | 出所 | 名乗り | nanoid | tree に在るか |
 |---|---|---|---|
-| `PROJECT.jsonld` / `README.edn` / `CLAUDE.md` | カビ撲滅プラットフォーム（IoT カビセンサー・H3 分布） | `mcr736od` / `kpat4bp7` | **どちらも無い** |
+| `PROJECT.jsonld` / `README.edn` / `AGENTS.md` | カビ撲滅プラットフォーム（IoT カビセンサー・H3 分布） | `mcr736od` / `kpat4bp7` | **どちらも無い** |
 | `appview/…/wrangler.jsonc` / `kotodama.jsonld`（**deploy される側**） | Wholesale Trade（乾物・卸売取引） | `w8p4dsvf` | 在る |
 
 どちらが正かはオーナーの決定であって、移行が勝手に選ぶものではない。
@@ -75,7 +75,7 @@ deploy されていない）。あとで「移行前からあった」と読ま�
 | Worker 設定 | `appview/kareyanagi-mcp-component/wrangler.jsonc` |
 | actor 記述子 | `appview/kareyanagi-mcp-component/kotodama.jsonld` |
 | 検査 | `scripts/{smoke-worker.cljs, verify-docs-claims.cljs}` |
-| 設計 | `CLAUDE.md` |
+| 設計 | `AGENTS.md` |
 | 由来・識別 | `PROJECT.jsonld` / `README.edn` / `migration.edn` |
 | appview ではないもの | `bpmn/kareyanagi-control.bpmn` |
 | 文書 | `README.md` / `docs/operator-quickstart.md` / `docs/adr/0001-*.edn` |
@@ -175,7 +175,7 @@ deploy 先も中継先も、いま存在しない。`/xrpc/` は到達できな�
   `wrangler dev --local`（workerd 4.124.0）で起こし、7 経路すべてが期待どおり
   答えることを確認している（`docs/operator-quickstart.md` §4.6）。
   `rules`（CompiledWasm）はこの移行の対象ではないので**触っていない**
-- `CLAUDE.md` も**意図的に変更**した（tree に実在するものを測って記録した節を
+- `AGENTS.md` も**意図的に変更**した（tree に実在するものを測って記録した節を
   追加。元の文書は tree に無い 2 component と Svelte 5 UI の計画を、在るものの
   記述であるかのように書いていた）
 - TypeScript/Svelte の 12 ファイルは**移行で撤去**した。検証器はその 12 パスを

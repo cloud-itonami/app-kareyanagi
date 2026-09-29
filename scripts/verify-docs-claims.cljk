@@ -44,9 +44,9 @@
    :readme-edn-role ":mold-eradication-operations-application"})
 
 ;; Inherited files this repository still carries BYTE-IDENTICAL.
-;; wrangler.jsonc and CLAUDE.md left this set DELIBERATELY (main re-pointed, the
+;; wrangler.jsonc and AGENTS.md left this set DELIBERATELY (main re-pointed, the
 ;; assets block and the SvelteKit compat flags removed, APP_FRAMEWORK updated;
-;; CLAUDE.md gained a measured section about what is actually in the tree). Both
+;; AGENTS.md gained a measured section about what is actually in the tree). Both
 ;; are checked by CONTENT below instead of by hash, so an intentional change and
 ;; an accidental one stay distinguishable.
 (def preserved
@@ -176,11 +176,11 @@
         (undet! "README.edn unreadable")
         (check! :readme-edn-role true (str/includes? r (:readme-edn-role claims)))))
 
-    ;; CLAUDE.md now records what is actually in the tree (it described two
+    ;; AGENTS.md now records what is actually in the tree (it described two
     ;; components, neither of which exists here, and a Svelte 5 UI).
-    (let [c (slurp* "CLAUDE.md")]
+    (let [c (slurp* "AGENTS.md")]
       (if (nil? c)
-        (undet! "CLAUDE.md unreadable")
+        (undet! "AGENTS.md unreadable")
         (check! :claude-md-describes-cljs true
                 (and (str/includes? c "shadow-cljs")
                      (str/includes? c "cljs-esm-worker")
